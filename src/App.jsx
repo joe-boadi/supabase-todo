@@ -1,26 +1,13 @@
 import { useState } from "react";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+
 import "./App.css";
+
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import supabase from "./supabase-client";
 
 function App() {
-  // const [todoList, setTodoList] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const queryClient = useQueryClient();
-  // Not ideal to use this method to fetch data, use the react query istead, for tutorial purposel we can use useEffect for now.
-  // useEffect(() => {
-  //   fetchTodo();
-  // }, []);
-
-  // const fetchTodo = async () => {
-  //   const { data, error } = await supabase.from("Todo-CRUD").select("*");
-
-  //   if (error) {
-  //     console.log(`Error fetching data: ${error}`);
-  //   } else {
-  //     setTodoList([data]);
-  //   }
-  // };
 
   const {
     data: todoList = [],
@@ -35,24 +22,6 @@ function App() {
       return data;
     },
   });
-
-  // const addTodo = async () => {
-  //   const newTodoData = {
-  //     name: newTodo,
-  //     isCompleted: false,
-  //   };
-  //   const { data, error } = await supabase
-  //     .from("Todo-CRUD")
-  //     .insert([newTodoData])
-  //     .single();
-
-  //   if (error) {
-  //     console.log(`Error: ${error}`);
-  //   } else {
-  //     setTodoList((prev) => [...prev, data]);
-  //     setNewTodo("");
-  //   }
-  // };
 
   //Mutaton for adding a new todo
   const addTodo = useMutation({
@@ -70,22 +39,6 @@ function App() {
     },
   });
 
-  // const completeTask = async (id, isCompleted) => {
-  //   const { _, error } = await supabase
-  //     .from("Todo-CRUD")
-  //     .update({ isCompleted: !isCompleted })
-  //     .eq("id", id);
-
-  //   if (error) {
-  //     console.log(`Error toggling todo: ${error}`);
-  //   } else {
-  //     const updatedTodoList = todoList.map((todo) =>
-  //       todo.id === id ? { ...todo, isCompleted: !isCompleted } : todo
-  //     );
-  //     setTodoList(updatedTodoList);
-  //   }
-  // };
-
   const completeTask = useMutation({
     mutationFn: async ({ id, isCompleted }) => {
       await supabase
@@ -95,15 +48,6 @@ function App() {
     },
     onSuccess: () => queryClient.invalidateQueries(["todos"]),
   });
-
-  // const deleteTodoTask = async (id) => {
-  //   const { _, error } = await supabase.from("Todo-CRUD").delete().eq("id", id);
-  //   if (error) {
-  //     console.log(`Error deleting todo-list: ${error}`);
-  //   } else {
-  //     setTodoList((prev) => prev.filter((todo) => todo.id !== id));
-  //   }
-  // };
 
   const deleteTodoTask = useMutation({
     mutationFn: async (id) => {
